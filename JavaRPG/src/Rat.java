@@ -2,7 +2,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Rat extends Enemy {
+public class Rat extends Entity {
     
     Rat(int x, int y) {
         super(x, y);

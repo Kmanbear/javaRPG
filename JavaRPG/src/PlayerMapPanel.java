@@ -121,16 +121,22 @@ public class PlayerMapPanel extends JPanel {
             for (int j = 0; j < hModel.getPlayerMapDim(); j++) {
                 g.setColor(Color.black);
                 g.drawRect((int) squareBoard[i][j].getX(), (int) squareBoard[i][j].getY(), (int) squareBoard[i][j].getWidth(), (int) squareBoard[i][j].getHeight());
-                int state = hModel.getPlayerMapCell(i, j);
-                if (state == 1) {
-                    g.setColor(Color.green);
-                    g.fillRect(squareBoard[i][j].x, squareBoard[i][j].y, squareBoard[i][j].width, squareBoard[i][j].height);
-                } else if (state == 2) {
-                    g.setColor(Color.blue);
-                    g.fillRect(squareBoard[i][j].x, squareBoard[i][j].y, squareBoard[i][j].width, squareBoard[i][j].height);
-                } else if (state == 0) {
-                    g.setColor(Color.black);
-                    g.fillRect(squareBoard[i][j].x, squareBoard[i][j].y, squareBoard[i][j].width, squareBoard[i][j].height);
+                Tile tile = hModel.getPlayerMapCell(i, j);
+                switch(tile.getTerrain()) {
+                    case GRASS:
+                        g.setColor(Color.green);
+                        g.fillRect(squareBoard[i][j].x, squareBoard[i][j].y, squareBoard[i][j].width, squareBoard[i][j].height);
+                        break;                       
+                    case WATER :
+                        g.setColor(Color.green);
+                        g.fillRect(squareBoard[i][j].x, squareBoard[i][j].y, squareBoard[i][j].width, squareBoard[i][j].height);
+                        break;  
+                    case EMPTY:
+                        g.setColor(Color.black);
+                        g.fillRect(squareBoard[i][j].x, squareBoard[i][j].y, squareBoard[i][j].width, squareBoard[i][j].height);
+                        break;
+                    default:
+                        System.out.println("unhandled terrain draw case");
                 }
             }
         }
