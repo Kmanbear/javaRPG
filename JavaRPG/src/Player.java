@@ -1,14 +1,15 @@
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-public class Player {
-    private Point2D location;
+public class Player extends Entity {
     private Tile[][] playerMap;
     private int playerMapRange;
     
     Player(int x, int y, int range) {
-        this.location = new Point2D.Double(x, y);
+        super(x, y);
         playerMapRange = range;
         int dim = 2 * playerMapRange + 1;
         playerMap = new Tile[dim][dim];
@@ -19,8 +20,8 @@ public class Player {
         return locationCopy;
     }
     
-    public void setLocation(int x, int y) {
-        location.setLocation(x, y);
+    public void setLocation(Point2D newLocation) {
+        location.setLocation(newLocation);
     }
 
     public void setPlayerMap(Tile[][] newPlayerMap) {
@@ -38,6 +39,20 @@ public class Player {
             boardCopy[i] = playerMap[i].clone();
         }
         return boardCopy;
+    }
+
+    @Override
+    public List<Point2D> calculatePossibleMoves() {
+        List<Point2D> possibleMoves = new ArrayList<Point2D>();
+        //rats move only one space (no diagonal)
+        possibleMoves.add(new Point2D.Double(location.getX(), location.getY()));
+        possibleMoves.add(new Point2D.Double(location.getX() + 1, location.getY()));
+        possibleMoves.add(new Point2D.Double(location.getX() - 1, location.getY()));
+        possibleMoves.add(new Point2D.Double(location.getX(), location.getY() + 1));
+        possibleMoves.add(new Point2D.Double(location.getX(), location.getY() - 1));
+        //remove impossible moves
+        
+        return possibleMoves;
     }
 
     

@@ -1,4 +1,6 @@
+import java.awt.Point;
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,10 +40,11 @@ public class MapModel {
      * @return whether the turn was successful
      */
     public boolean playerMovement(int x, int y) {
-        int newPlayerX = (int) player.getLocation().getX() + x;
-        int newPlayerY = (int) player.getLocation().getY() + y;
-        if (inWorldMap(newPlayerX, newPlayerY) && getWorldMapCell(newPlayerX, newPlayerY).getAccessible()) { 
-            player.setLocation(newPlayerX, newPlayerY);
+        //int newPlayerX = (int) player.getLocation().getX() + x;
+        //int newPlayerY = (int) player.getLocation().getY() + y;
+        Point2D newLocation = new Point2D.Double(player.getLocation().getX() + x, player.getLocation().getY() + y);
+        if (inWorldMap(newLocation) && getWorldMapCell(newLocation).getAccessible()) { 
+            player.setLocation(newLocation);
             Tile[][] newPlayerMap = getPlayerMap(player.getLocation(), player.getPlayerMapRange());
             player.setPlayerMap(newPlayerMap);
             return true;
@@ -63,19 +66,20 @@ public class MapModel {
             for (int j = 0; j < newPlayerMap.length; j++) {
                 newPlayerMap[j][i] = new Tile(new Point2D.Double(j, i));
                 newPlayerMap[j][i].setTerrain(TerrainType.EMPTY);//sets anything not in map to empty
-                int worldMapI = i + (int) location.getX() - range;
-                int worldMapJ = j + (int) location.getY() - range;
-                if (inWorldMap(worldMapI, worldMapJ)) {
-                    newPlayerMap[j][i] = worldMap[worldMapJ][worldMapI];//TODO: figure out if this is shallow vs deep copy
+                //int worldMapI = i + (int) location.getX() - range;
+                //int worldMapJ = j + (int) location.getY() - range;
+                Point2D worldMapLocation = new Point2D.Double( i + (int) location.getX() - range, j + (int) location.getY() - range);
+                if (inWorldMap(worldMapLocation)) {
+                    newPlayerMap[j][i] = worldMap[(int) worldMapLocation.getY()][(int) worldMapLocation.getX()];//TODO: figure out if this is shallow vs deep copy
                 }
             }
         }
         return newPlayerMap;
     }
 
-    private boolean inWorldMap(int worldMapI, int worldMapJ) {
-        return worldMapI >= 0 && worldMapI < dimension &&//checks if in world map, otherwise it is zero
-                worldMapJ >= 0 && worldMapJ < dimension;
+    private boolean inWorldMap(Point2D newLocation) {
+        return (int) newLocation.getX() >= 0 && (int) newLocation.getX() < dimension &&//checks if in world map, otherwise it is zero
+                (int) newLocation.getY() >= 0 && (int) newLocation.getY() < dimension;
     }
 
     /**
@@ -109,7 +113,9 @@ public class MapModel {
      *         of the corresponding cell on the 
      *         game board.  //TODO: implement hierarchy, what numbers stand for what
      */
-    public Tile getWorldMapCell(int x, int y) {
+    public Tile getWorldMapCell(Point2D newLocation) {
+        int x = (int) newLocation.getX();
+        int y = (int) newLocation.getY();
         return worldMap[y][x];
     }
     
