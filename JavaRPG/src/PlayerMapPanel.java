@@ -120,9 +120,9 @@ public class PlayerMapPanel extends JPanel {
         for (int i = 0; i < hModel.getPlayerMapDim(); i++) {
             for (int j = 0; j < hModel.getPlayerMapDim(); j++) {
                 g.setColor(Color.black);
-                g.drawRect((int) squareBoard[i][j].getX(), (int) squareBoard[i][j].getY(), (int) squareBoard[i][j].getWidth(), (int) squareBoard[i][j].getHeight());
+                g.drawRect(squareBoard[i][j].x,  squareBoard[i][j].y, (int) squareBoard[i][j].getWidth(), (int) squareBoard[i][j].getHeight());
                 Tile tile = hModel.getPlayerMapCell(i, j);
-                switch(tile.getTerrain()) {
+                switch (tile.getTerrain()) {
                     case GRASS:
                         g.setColor(Color.green);
                         g.fillRect(squareBoard[i][j].x, squareBoard[i][j].y, squareBoard[i][j].width, squareBoard[i][j].height);
