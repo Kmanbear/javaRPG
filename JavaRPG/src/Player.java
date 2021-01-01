@@ -18,10 +18,6 @@ public class Player extends Entity {
         Point locationCopy = new Point(location.x, location.y);
         return locationCopy;
     }
-    
-    public void setLocation(Point newLocation) {
-        location.setLocation(newLocation);
-    }
 
     public void setPlayerMap(Tile[][] newPlayerMap) {
         playerMap = newPlayerMap;     
@@ -32,7 +28,6 @@ public class Player extends Entity {
     }
     
     public Tile[][] getPlayerMap() {
-        System.out.println(Arrays.deepToString(playerMap));
         Tile [][] boardCopy = new Tile[playerMap.length][];
         for (int i = 0; i < playerMap.length; i++) {
             boardCopy[i] = playerMap[i].clone();

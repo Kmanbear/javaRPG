@@ -17,13 +17,13 @@ public class MapModel {
         reset();
     }
     
-    public MapModel(Tile[][] mapVals) { //constructor to set board for testing
-        dimension = mapVals.length;
-        reset();
-        for (int i = 0; i < mapVals.length; i++) { //copies all values of input board
-            worldMap[i] = mapVals[i].clone();
-        }
-    }
+//    public MapModel(Tile[][] mapVals) { //constructor to set board for testing
+//        dimension = mapVals.length;
+//        reset();
+//        for (int i = 0; i < mapVals.length; i++) { //copies all values of input board
+//            worldMap[i] = mapVals[i].clone();
+//        }
+//    }
     
 
     /**
@@ -38,10 +38,9 @@ public class MapModel {
      * @return whether the turn was successful
      */
     public boolean playerMovement(int x, int y) {
-        //int newPlayerX =  player.getLocation().x + x;
-        //int newPlayerY =  player.getLocation().y + y;
         Point newLocation = new Point(player.getLocation().x + x, player.getLocation().y + y);
-        if (inWorldMap(newLocation) && getWorldMapCell(newLocation).getAccessible()) { 
+        if (inWorldMap(newLocation) && getWorldMapCell(newLocation).getAccessible() && 
+                player.calculatePossibleMoves().contains(newLocation)) { 
             player.setLocation(newLocation);
             Tile[][] newPlayerMap = getPlayerMap(player.getLocation(), player.getPlayerMapRange());
             player.setPlayerMap(newPlayerMap);
@@ -84,7 +83,6 @@ public class MapModel {
     public void reset() {
         initializeWorldMap();
         player = new Player(0 ,1, 3);//starting location, and range
-        enemies.add(new Rat(3, 3));
         playerMovement(0, 0); //quick fix to initialize player TODO: replace quick fix
     }
     
@@ -97,6 +95,13 @@ public class MapModel {
                 worldMap[i][j].setTerrain(TerrainType.GRASS);
             }
         }
+        enemies.clear();
+        addEnemy(new Rat(3, 3));
+    }
+
+    private void addEnemy(Entity enemy) {
+        enemies.add(enemy);
+        worldMap[enemy.location.x][enemy.location.y].addEntity(enemy);
     }
 
     /**
@@ -147,12 +152,21 @@ public class MapModel {
     }
 
     public void enemyMovement() {
-        for (Entity enemy : enemies) {
+        //TODO: sort enemies list so stronger enemy comes first
+        System.out.println(enemies.toString());
+        for (Entity enemy : enemies) {           
             List<Point> enemyPossibleMoves = enemy.calculatePossibleMoves();
+            Point closestMove = new Point(enemy.location.x, enemy.location.y); //default: set to where enemy is already
             for (Point move : enemyPossibleMoves) {
-                //TODO: check if move works
-                //if move works, then enter new location of enemy there
+                if (inWorldMap(move) && getWorldMapCell(move).getAccessible()) {                    
+                    if (move.distance(player.location) < closestMove.distance(player.location)) {
+                        closestMove.setLocation(move);
+                    }
+                }
             }
+            worldMap[enemy.location.y][enemy.location.x].removeEntity(enemy);
+            worldMap[closestMove.y][closestMove.x].addEntity(enemy);
+            enemy.setLocation(new Point(closestMove.x, closestMove.y));
         }
         
     }

@@ -11,12 +11,12 @@ public class Rat extends Entity {
     @Override
     public List<Point> calculatePossibleMoves() {
         List<Point> possibleMoves = new ArrayList<Point>();
-        //rats move only one space (no diagonal)
-        possibleMoves.add(new Point(location.x, location.y));
+        //rats move only one space (no diagonal)        
         possibleMoves.add(new Point(location.x + 1, location.y));
         possibleMoves.add(new Point(location.x - 1, location.y));
         possibleMoves.add(new Point(location.x, location.y + 1));
         possibleMoves.add(new Point(location.x, location.y - 1));
+        possibleMoves.add(new Point(location.x, location.y));
         //remove impossible moves
         
         return possibleMoves;

@@ -14,6 +14,14 @@ public abstract class Entity {
         this.location = new Point(x, y);
     }
     
+    
+    
     //abstract methods
     public abstract List<Point> calculatePossibleMoves();
+
+
+
+    public void setLocation(Point point) {
+        location.setLocation(point);
+    }
 }
