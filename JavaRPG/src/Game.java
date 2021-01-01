@@ -9,15 +9,19 @@ public class Game implements Runnable {
     public void run() {
         
         final JFrame frame = new JFrame("Hex");
-     // Status panel
+        // Status panel
         final JPanel status_panel = new JPanel();
         frame.add(status_panel, BorderLayout.SOUTH);
         final JLabel status = new JLabel("Setting up...");
         status_panel.add(status);
       
         // Game board
-        final PlayerMapPanel board = new PlayerMapPanel(status);
-        frame.add(board, BorderLayout.CENTER);
+        final JPanel gameBoard = new JPanel(new CardLayout());
+        final PlayerMapPanel mapBoard = new PlayerMapPanel(status);        
+        final BattlePanel battleBoard = new BattlePanel(status);
+        gameBoard.add(mapBoard, "mapBoard");
+        gameBoard.add(battleBoard, "battleBoard");
+        frame.add(gameBoard, BorderLayout.CENTER);
       
         // Reset button
         final JPanel control_panel = new JPanel();
@@ -26,10 +30,19 @@ public class Game implements Runnable {
         final JButton reset = new JButton("Reset");
         reset.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                board.reset();
+                mapBoard.reset();
             }
         });
         control_panel.add(reset);
+        
+        final JButton switchPanel = new JButton("switchPanel");
+        switchPanel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(gameBoard.getLayout());
+                cl.previous(gameBoard);
+            }
+        });
+        control_panel.add(switchPanel);
         
         // Put the frame on the screen
         
@@ -39,7 +52,7 @@ public class Game implements Runnable {
         frame.setVisible(true);
 
         // Start the game
-        board.reset();
+        mapBoard.reset();
     }
 
     public static void main(String[] args) {
