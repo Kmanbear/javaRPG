@@ -1,6 +1,6 @@
 import java.awt.Rectangle;
 
-public class PlayerSquarePanel extends Rectangle{
+public class PlayerSquarePanel extends Rectangle {
     private static final long serialVersionUID = 1L; //auto-generated
     private int xCoordinate; //row of square
     private int yCoordinate; //col of square

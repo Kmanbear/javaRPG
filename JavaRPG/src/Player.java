@@ -1,28 +1,25 @@
-import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class Player {
-    private Point2D location;
-    private int[][] playerMap;
+public class Player extends Entity {
+    private Tile[][] playerMap;
     private int playerMapRange;
     
     Player(int x, int y, int range) {
-        this.location = new Point2D.Double(x, y);
+        super(x, y);
         playerMapRange = range;
         int dim = 2 * playerMapRange + 1;
-        playerMap = new int[dim][dim];
+        playerMap = new Tile[dim][dim];
     }
     
-    public Point2D getLocation() {
-        Double locationCopy = new Point2D.Double(location.getX(), location.getY());
+    public Point getLocation() {
+        Point locationCopy = new Point(location.x, location.y);
         return locationCopy;
     }
-    
-    public void setLocation(int x, int y) {
-        location.setLocation(x, y);
-    }
 
-    public void setPlayerMap(int[][] newPlayerMap) {
+    public void setPlayerMap(Tile[][] newPlayerMap) {
         playerMap = newPlayerMap;     
     }
 
@@ -30,12 +27,26 @@ public class Player {
         return playerMapRange;
     }
     
-    public int[][] getPlayerMap() {
-        int [][] boardCopy = new int[playerMap.length][];
+    public Tile[][] getPlayerMap() {
+        Tile [][] boardCopy = new Tile[playerMap.length][];
         for (int i = 0; i < playerMap.length; i++) {
             boardCopy[i] = playerMap[i].clone();
         }
         return boardCopy;
+    }
+
+    @Override
+    public List<Point> calculatePossibleMoves() {
+        List<Point> possibleMoves = new ArrayList<Point>();
+        //rats move only one space (no diagonal)
+        possibleMoves.add(new Point(location.x, location.y));
+        possibleMoves.add(new Point(location.x + 1, location.y));
+        possibleMoves.add(new Point(location.x - 1, location.y));
+        possibleMoves.add(new Point(location.x, location.y + 1));
+        possibleMoves.add(new Point(location.x, location.y - 1));
+        //remove impossible moves
+        
+        return possibleMoves;
     }
 
     

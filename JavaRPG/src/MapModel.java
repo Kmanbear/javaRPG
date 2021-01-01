@@ -1,35 +1,13 @@
-import java.awt.geom.Point2D;
+import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-/**
- * This class is a model for TicTacToe.  
- * 
- * This game adheres to a Model-View-Controller design framework.
- * This framework is very effective for turn-based games.  We
- * STRONGLY recommend you review these lecture slides, starting at
- * slide 8, for more details on Model-View-Controller:  
- * https://www.seas.upenn.edu/~cis120/current/files/slides/lec37.pdf
- * 
- * This model is completely independent of the view and controller.
- * This is in keeping with the concept of modularity! We can play
- * the whole game from start to finish without ever drawing anything
- * on a screen or instantiating a Java Swing object.
- * 
- * Run this file to see the main method play a game of TicTacToe,
- * visualized with Strings printed to the console.
- */
 public class MapModel {
 
     private int dimension;
-    private int[][] worldMap;
-    private boolean gameOver;
+    private Tile[][] worldMap;
     private Player player;
-    private List<Enemy> enemies = new ArrayList<>();
-    private Map<Integer, Terrain> terrainDictionary = new HashMap<>();
+    private List<Entity> enemies = new ArrayList<>();
 
     /**
      * Constructor sets up game state.
@@ -39,13 +17,13 @@ public class MapModel {
         reset();
     }
     
-    public MapModel(int[][] mapVals) { //constructor to set board for testing
-        dimension = mapVals.length;
-        reset();
-        for (int i = 0; i < mapVals.length; i++) { //copies all values of input board
-            worldMap[i] = mapVals[i].clone();
-        }
-    }
+//    public MapModel(Tile[][] mapVals) { //constructor to set board for testing
+//        dimension = mapVals.length;
+//        reset();
+//        for (int i = 0; i < mapVals.length; i++) { //copies all values of input board
+//            worldMap[i] = mapVals[i].clone();
+//        }
+//    }
     
 
     /**
@@ -60,13 +38,12 @@ public class MapModel {
      * @return whether the turn was successful
      */
     public boolean playerMovement(int x, int y) {
-        int newPlayerX = (int) player.getLocation().getX() + x;
-        int newPlayerY = (int) player.getLocation().getY() + y;
-        if (inWorldMap(newPlayerX, newPlayerY) && terrainDictionary.get(getWorldMapCell(newPlayerX, newPlayerY)).getAccesible()) { 
-            player.setLocation(newPlayerX, newPlayerY);
-            int[][] newPlayerMap = getPlayerMap(player.getLocation(), player.getPlayerMapRange());
+        Point newLocation = new Point(player.getLocation().x + x, player.getLocation().y + y);
+        if (inWorldMap(newLocation) && getWorldMapCell(newLocation).getAccessible() && 
+                player.calculatePossibleMoves().contains(newLocation)) { 
+            player.setLocation(newLocation);
+            Tile[][] newPlayerMap = getPlayerMap(player.getLocation(), player.getPlayerMapRange());
             player.setPlayerMap(newPlayerMap);
-            System.out.println(Arrays.deepToString(newPlayerMap));
             return true;
         } else { //when player tries to travel somewhere illegal
             return false;
@@ -79,53 +56,52 @@ public class MapModel {
      * @param y y-coordinate of player
      * @return section of map player can see at location x,y
      */
-    private int[][] getPlayerMap(Point2D location, int range) {
+    private Tile[][] getPlayerMap(Point location, int range) {
         int dim = getPlayerMapDim();
-        int[][] newPlayerMap = new int[dim][dim];
+        Tile[][] newPlayerMap = new Tile[dim][dim];
         for (int i = 0; i < newPlayerMap.length; i++) {
             for (int j = 0; j < newPlayerMap.length; j++) {
-                int worldMapI = i + (int) location.getX() - range;
-                int worldMapJ = j + (int) location.getY() - range;
-                if (inWorldMap(worldMapI, worldMapJ)) {
-                    newPlayerMap[j][i] = worldMap[worldMapJ][worldMapI];
+                newPlayerMap[j][i] = new Tile(new Point(j, i));
+                newPlayerMap[j][i].setTerrain(TerrainType.EMPTY);//sets anything not in map to empty
+                Point worldMapLocation = new Point(i + location.x - range, j + location.y - range);
+                if (inWorldMap(worldMapLocation)) {
+                    newPlayerMap[j][i] = worldMap[worldMapLocation.y][worldMapLocation.x];//TODO: figure out if this is shallow vs deep copy
                 }
             }
         }
         return newPlayerMap;
     }
 
-    private boolean inWorldMap(int worldMapI, int worldMapJ) {
-        return worldMapI >= 0 && worldMapI < dimension &&//checks if in world map, otherwise it is zero
-                worldMapJ >= 0 && worldMapJ < dimension;
+    private boolean inWorldMap(Point newLocation) {
+        return  newLocation.x >= 0 && newLocation.x < dimension &&//checks if in world map, otherwise it is zero
+                 newLocation.y >= 0 &&  newLocation.y < dimension;
     }
 
     /**
      * reset (re-)sets the game state to start a new game.
      */
     public void reset() {
-        worldMap = new int[][] {//hard coded map
-            {2, 1, 1, 1, 1, 1, 1, 1, 1, 2},
-            {1, 1, 1, 2, 2, 2, 1, 1, 1, 1},
-            {1, 1, 2, 1, 1, 1, 2, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1, 2, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1, 2, 1, 1, 1},
-            {1, 2, 1, 1, 1, 2, 1, 1, 1, 2},
-            {1, 1, 1, 1, 1, 2, 1, 1, 1, 1},
-            {1, 1, 2, 1, 1, 2, 1, 2, 1, 1},
-            {1, 1, 2, 1, 2, 1, 1, 1, 1, 1},
-            {2, 1, 1, 1, 2, 1, 1, 1, 1, 2},
-        };
+        initializeWorldMap();
         player = new Player(0 ,1, 3);//starting location, and range
-        enemies.add(new Rat(3, 3));
-        initializeTerrainDictionary();
-        gameOver = false;
-        playerMovement(0, 0); //quick fix to initalize player TODO: replace quick fix
+        playerMovement(0, 0); //quick fix to initialize player TODO: replace quick fix
     }
     
-    private void initializeTerrainDictionary() {
-        terrainDictionary.put(0, new EmptyTerrain());
-        terrainDictionary.put(2, new EmptyTerrain());
-        terrainDictionary.put(1, new FilledTerrain());
+    private void initializeWorldMap() {
+        // TODO Auto-generated method stub
+        worldMap = new Tile[dimension][dimension];
+        for (int i = 0; i < dimension; i++) {
+            for (int j = 0; j < dimension; j++) {
+                worldMap[i][j] = new Tile(new Point(i, j));
+                worldMap[i][j].setTerrain(TerrainType.GRASS);
+            }
+        }
+        enemies.clear();
+        addEnemy(new Rat(3, 3));
+    }
+
+    private void addEnemy(Entity enemy) {
+        enemies.add(enemy);
+        worldMap[enemy.location.x][enemy.location.y].addEntity(enemy);
     }
 
     /**
@@ -138,7 +114,9 @@ public class MapModel {
      *         of the corresponding cell on the 
      *         game board.  //TODO: implement hierarchy, what numbers stand for what
      */
-    public int getWorldMapCell(int x, int y) {
+    public Tile getWorldMapCell(Point newLocation) {
+        int x =  newLocation.x;
+        int y =  newLocation.y;
         return worldMap[y][x];
     }
     
@@ -150,8 +128,8 @@ public class MapModel {
      *         where values of array are: 0 = empty,
      *         1 = Player 1, 2 = Player 2
      */
-    public int[][] getWorldMap() {
-        int [][] boardCopy = new int[worldMap.length][];
+    public Tile[][] getWorldMap() {
+        Tile[][] boardCopy = new Tile[worldMap.length][];
         for (int i = 0; i < worldMap.length; i++) {
             boardCopy[i] = worldMap[i].clone();
         }
@@ -168,18 +146,27 @@ public class MapModel {
         return 2 * player.getPlayerMapRange() + 1;//range on both sides, plus the row/col the player stands in
     }
 
-    public int getPlayerMapCell(int i, int j) {
-        int[][] playerMap = player.getPlayerMap();
+    public Tile getPlayerMapCell(int i, int j) {
+        Tile[][] playerMap = player.getPlayerMap();
         return playerMap[j][i];
     }
 
     public void enemyMovement() {
-        for (Enemy enemy : enemies) {
-            List<Point2D> enemyPossibleMoves = enemy.calculatePossibleMoves();
-            for (Point2D move : enemyPossibleMoves) {
-                //TODO: check if move works
-                //if move works, then enter new location of enemy there
+        //TODO: sort enemies list so stronger enemy comes first
+        System.out.println(enemies.toString());
+        for (Entity enemy : enemies) {           
+            List<Point> enemyPossibleMoves = enemy.calculatePossibleMoves();
+            Point closestMove = new Point(enemy.location.x, enemy.location.y); //default: set to where enemy is already
+            for (Point move : enemyPossibleMoves) {
+                if (inWorldMap(move) && getWorldMapCell(move).getAccessible()) {                    
+                    if (move.distance(player.location) < closestMove.distance(player.location)) {
+                        closestMove.setLocation(move);
+                    }
+                }
             }
+            worldMap[enemy.location.y][enemy.location.x].removeEntity(enemy);
+            worldMap[closestMove.y][closestMove.x].addEntity(enemy);
+            enemy.setLocation(new Point(closestMove.x, closestMove.y));
         }
         
     }

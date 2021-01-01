@@ -120,17 +120,32 @@ public class PlayerMapPanel extends JPanel {
         for (int i = 0; i < hModel.getPlayerMapDim(); i++) {
             for (int j = 0; j < hModel.getPlayerMapDim(); j++) {
                 g.setColor(Color.black);
-                g.drawRect((int) squareBoard[i][j].getX(), (int) squareBoard[i][j].getY(), (int) squareBoard[i][j].getWidth(), (int) squareBoard[i][j].getHeight());
-                int state = hModel.getPlayerMapCell(i, j);
-                if (state == 1) {
-                    g.setColor(Color.green);
-                    g.fillRect(squareBoard[i][j].x, squareBoard[i][j].y, squareBoard[i][j].width, squareBoard[i][j].height);
-                } else if (state == 2) {
-                    g.setColor(Color.blue);
-                    g.fillRect(squareBoard[i][j].x, squareBoard[i][j].y, squareBoard[i][j].width, squareBoard[i][j].height);
-                } else if (state == 0) {
-                    g.setColor(Color.black);
-                    g.fillRect(squareBoard[i][j].x, squareBoard[i][j].y, squareBoard[i][j].width, squareBoard[i][j].height);
+                g.drawRect(squareBoard[i][j].x,  squareBoard[i][j].y, (int) squareBoard[i][j].getWidth(), (int) squareBoard[i][j].getHeight());
+                Tile tile = hModel.getPlayerMapCell(i, j);
+                if (!tile.entities.isEmpty()) {
+                    g.setColor(Color.red);
+                    g.fillRect(squareBoard[i][j].x + 1, squareBoard[i][j].y + 1, squareBoard[i][j].width - 2, squareBoard[i][j].height - 2);
+                } else {
+                switch (tile.getTerrain()) {
+                    case GRASS:
+                        g.setColor(Color.green);
+                        g.fillRect(squareBoard[i][j].x + 1, squareBoard[i][j].y + 1, squareBoard[i][j].width - 2, squareBoard[i][j].height - 2);
+                        break;                       
+                    case WATER :
+                        g.setColor(Color.green);
+                        g.fillRect(squareBoard[i][j].x, squareBoard[i][j].y, squareBoard[i][j].width, squareBoard[i][j].height);
+                        break;  
+                    case EMPTY:
+                        g.setColor(Color.black);
+                        g.fillRect(squareBoard[i][j].x, squareBoard[i][j].y, squareBoard[i][j].width, squareBoard[i][j].height);
+                        break;
+                    default:
+                        System.out.println("unhandled terrain draw case");
+                }
+                }
+                if (i == 3 && j == 3) { //TODO: make this not dependent on range
+                    g.setColor(Color.gray);
+                    g.fillRect(squareBoard[i][j].x + 1, squareBoard[i][j].y + 1, squareBoard[i][j].width - 2, squareBoard[i][j].height - 2);
                 }
             }
         }
