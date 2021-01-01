@@ -16,9 +16,11 @@ public class Game implements Runnable {
         status_panel.add(status);
       
         // Game board
+        MapModel mapModel = new MapModel();
+        BattleModel battleModel = new BattleModel();
         final JPanel gameBoard = new JPanel(new CardLayout());
-        final PlayerMapPanel mapBoard = new PlayerMapPanel(status);        
-        final BattlePanel battleBoard = new BattlePanel(status);
+        final PlayerMapPanel mapBoard = new PlayerMapPanel(status, mapModel, battleModel);
+        final BattlePanel battleBoard = new BattlePanel(status, mapModel, battleModel);
         gameBoard.add(mapBoard, "mapBoard");
         gameBoard.add(battleBoard, "battleBoard");
         frame.add(gameBoard, BorderLayout.CENTER);

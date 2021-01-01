@@ -9,38 +9,22 @@ import java.awt.event.*;
 import javax.swing.*;
 
 @SuppressWarnings("serial")
-public class PlayerMapPanel extends JPanel {
-
-    private MapModel hModel; // model for the game
-    private JLabel status; // current status text
+public class PlayerMapPanel extends GamePanel {
+    
     private PlayerSquarePanel[][] squareBoard;
-
-    // Game constants
-    public static final int MAP_DIM = 10;//dimension of world map
-    private static final int LENGTH = 30; //length of square side
-    public static final int BOARD_WIDTH = LENGTH * MAP_DIM;
-    public static final int BOARD_HEIGHT = LENGTH * MAP_DIM;
-
     /**
      * Initializes the game board.
      */
-    public PlayerMapPanel(JLabel statusInit) {
-        // creates border around the court area, JComponent method
-        setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
-        // Enable keyboard focus on the court area.
-        // When this component has the keyboard focus, key events are handled by its key listener.
-        setFocusable(true);
+    public PlayerMapPanel(JLabel statusInit, MapModel mapModel1, BattleModel battleModel1) {
         
-        hModel = new MapModel(MAP_DIM); // initializes model for the game
-        status = statusInit; // initializes the status JLabel
+        super(statusInit, mapModel1, battleModel1);
         
         //initalize squareBoard
-        int dim = hModel.getPlayerMapDim();
+        int dim = mapModel.getPlayerMapDim();
         squareBoard = new PlayerSquarePanel[dim][dim];
         for (int i = 0; i < squareBoard.length; i++) {
             for (int j = 0; j < squareBoard.length; j++) {
-                squareBoard[i][j] = new PlayerSquarePanel(i, j, LENGTH);
+                squareBoard[i][j] = new PlayerSquarePanel(i, j, mapModel.LENGTH);
             }
         }
 
@@ -53,13 +37,13 @@ public class PlayerMapPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 Point p = e.getPoint();
                 
-                for (int i = 0; i < hModel.getPlayerMapDim(); i++) {
-                    for (int j = 0; j < hModel.getPlayerMapDim(); j++) {
+                for (int i = 0; i < mapModel.getPlayerMapDim(); i++) {
+                    for (int j = 0; j < mapModel.getPlayerMapDim(); j++) {
                         if (squareBoard[i][j].contains(p)) {
-                            int xMovement = i - ((hModel.getPlayerMapDim() - 1) / 2);
-                            int yMovement = j - ((hModel.getPlayerMapDim() - 1) / 2);                                 
-                            hModel.playerMovement(xMovement, yMovement);
-                            hModel.enemyMovement();
+                            int xMovement = i - ((mapModel.getPlayerMapDim() - 1) / 2);
+                            int yMovement = j - ((mapModel.getPlayerMapDim() - 1) / 2);                                 
+                            mapModel.playerMovement(xMovement, yMovement);
+                            mapModel.enemyMovement();
                         }
                     }
                 }
@@ -74,7 +58,7 @@ public class PlayerMapPanel extends JPanel {
      * (Re-)sets the game to its initial state.
      */
     public void reset() {
-        hModel.reset();
+        mapModel.reset();
         status.setText("Player 1's Turn");
         repaint();
 
@@ -103,10 +87,10 @@ public class PlayerMapPanel extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         //draws lines to indicate colored sides of boards
-        g.drawLine(1, 1, BOARD_WIDTH, 1);
-        g.drawLine(1, BOARD_HEIGHT, BOARD_WIDTH, BOARD_HEIGHT);
-        g.drawLine(1, 1, 1, BOARD_HEIGHT);
-        g.drawLine(BOARD_WIDTH, 1, BOARD_WIDTH, BOARD_HEIGHT);
+        g.drawLine(1, 1, mapModel.BOARD_WIDTH, 1);
+        g.drawLine(1, mapModel.BOARD_HEIGHT, mapModel.BOARD_WIDTH, mapModel.BOARD_HEIGHT);
+        g.drawLine(1, 1, 1, mapModel.BOARD_HEIGHT);
+        g.drawLine(mapModel.BOARD_WIDTH, 1, mapModel.BOARD_WIDTH, mapModel.BOARD_HEIGHT);
         //square grid\
         drawSquareGrid(g);
         
@@ -117,11 +101,11 @@ public class PlayerMapPanel extends JPanel {
      * Draws the initial borders of the square grid
      */
     private void drawSquareGrid(Graphics g) {
-        for (int i = 0; i < hModel.getPlayerMapDim(); i++) {
-            for (int j = 0; j < hModel.getPlayerMapDim(); j++) {
+        for (int i = 0; i < mapModel.getPlayerMapDim(); i++) {
+            for (int j = 0; j < mapModel.getPlayerMapDim(); j++) {
                 g.setColor(Color.black);
                 g.drawRect(squareBoard[i][j].x,  squareBoard[i][j].y, (int) squareBoard[i][j].getWidth(), (int) squareBoard[i][j].getHeight());
-                Tile tile = hModel.getPlayerMapCell(i, j);
+                Tile tile = mapModel.getPlayerMapCell(i, j);
                 if (!tile.entities.isEmpty()) {
                     g.setColor(Color.red);
                     g.fillRect(squareBoard[i][j].x + 1, squareBoard[i][j].y + 1, squareBoard[i][j].width - 2, squareBoard[i][j].height - 2);
@@ -155,6 +139,6 @@ public class PlayerMapPanel extends JPanel {
      */
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(BOARD_WIDTH, BOARD_HEIGHT);
+        return new Dimension(mapModel.BOARD_WIDTH, mapModel.BOARD_HEIGHT);
     }
 }

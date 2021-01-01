@@ -2,7 +2,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapModel {
+public class MapModel extends Model {
 
     private int dimension;
     private Tile[][] worldMap;
@@ -12,19 +12,10 @@ public class MapModel {
     /**
      * Constructor sets up game state.
      */
-    public MapModel(int dim) {
-        dimension = dim;
+    public MapModel() {
+        dimension = MAP_DIM;
         reset();
     }
-    
-//    public MapModel(Tile[][] mapVals) { //constructor to set board for testing
-//        dimension = mapVals.length;
-//        reset();
-//        for (int i = 0; i < mapVals.length; i++) { //copies all values of input board
-//            worldMap[i] = mapVals[i].clone();
-//        }
-//    }
-    
 
     /**
      * playerMovement

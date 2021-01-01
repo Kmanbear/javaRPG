@@ -18,14 +18,14 @@ public class GameTest {
     
     //playTurn tests
     //test playTurn on empty board
-    @Test
-    public void playTurnEmpty() {
-        MapModel model = new MapModel(10);
-        model.playerMovement(0, 0);
+//    @Test
+//    public void playTurnEmpty() {
+//        MapModel model = new MapModel(10);
+//        model.playerMovement(0, 0);
 //        assertTrue(Arrays.deepEquals(model.getWorldMap(), (new int[][] {
 //            {1, 0, 0},
 //            {0, 0, 0},
 //            {0, 0, 0}
 //        })));
-    }
+//    }
 }
