@@ -1,5 +1,3 @@
-import javax.swing.JLabel;
-
 public class Model {
     
     // Game constants

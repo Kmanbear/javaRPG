@@ -11,7 +11,7 @@ import javax.swing.*;
 @SuppressWarnings("serial")
 public class PlayerMapPanel extends GamePanel {
     
-    private PlayerSquarePanel[][] squareBoard;
+    private SquarePanel[][] squareBoard;
     /**
      * Initializes the game board.
      */
@@ -21,10 +21,10 @@ public class PlayerMapPanel extends GamePanel {
         
         //initalize squareBoard
         int dim = mapModel.getPlayerMapDim();
-        squareBoard = new PlayerSquarePanel[dim][dim];
+        squareBoard = new SquarePanel[dim][dim];
         for (int i = 0; i < squareBoard.length; i++) {
             for (int j = 0; j < squareBoard.length; j++) {
-                squareBoard[i][j] = new PlayerSquarePanel(i, j, mapModel.LENGTH);
+                squareBoard[i][j] = new SquarePanel(i, j, mapModel.LENGTH);
             }
         }
 

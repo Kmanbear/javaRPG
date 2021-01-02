@@ -1,5 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Collections;
+
 import javax.swing.*;
 
 /**
@@ -8,7 +11,7 @@ import javax.swing.*;
 public class Game implements Runnable {
     public void run() {
         
-        final JFrame frame = new JFrame("Hex");
+        final JFrame frame = new JFrame("Java RPG");
         // Status panel
         final JPanel status_panel = new JPanel();
         frame.add(status_panel, BorderLayout.SOUTH);
@@ -17,7 +20,7 @@ public class Game implements Runnable {
       
         // Game board
         MapModel mapModel = new MapModel();
-        BattleModel battleModel = new BattleModel();
+        BattleModel battleModel = new BattleModel(new Player(0, 0, 0), new ArrayList());//TODO: placeholder, rethink battleModel
         final JPanel gameBoard = new JPanel(new CardLayout());
         final PlayerMapPanel mapBoard = new PlayerMapPanel(status, mapModel, battleModel);
         final BattlePanel battleBoard = new BattlePanel(status, mapModel, battleModel);
