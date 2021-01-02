@@ -8,20 +8,21 @@ import javax.swing.JPanel;
 
 public class BattlePanel extends GamePanel {
 
-//    protected MapModel mapModel; // model for the game
-//    protected BattleModel battleModel; // model for the battle
+    protected BattleModel battleModel; // model for the battle
 //    protected JLabel status; // current status text
     
     private SquarePanel[][] squareBoard;
     
-    public BattlePanel(JLabel statusInit, MapModel mapModel1, BattleModel battleModel1) {
-        super(statusInit, mapModel1, battleModel1);
+    public BattlePanel(JLabel statusInit, GameModel gameModel1) {
+        
+        super(statusInit, gameModel1);
+        battleModel = gameModel.getCurrentBattleModel();
         
         //initalize squareBoard
         int dim = battleModel.getDim();
         squareBoard = new SquarePanel[dim][1];
         for (int i = 0; i < squareBoard.length; i++) {
-            squareBoard[i][0] = new SquarePanel(i, 0, battleModel.LENGTH);
+            squareBoard[i][0] = new SquarePanel(i, 0, Game.LENGTH);
         }
     }
     
@@ -29,10 +30,10 @@ public class BattlePanel extends GamePanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         //draws lines to indicate colored sides of boards
-        g.drawLine(1, 1, battleModel.BOARD_WIDTH, 1);
-        g.drawLine(1, battleModel.BOARD_HEIGHT, battleModel.BOARD_WIDTH, battleModel.BOARD_HEIGHT);
-        g.drawLine(1, 1, 1, battleModel.BOARD_HEIGHT);
-        g.drawLine(battleModel.BOARD_WIDTH, 1, battleModel.BOARD_WIDTH, battleModel.BOARD_HEIGHT);
+        g.drawLine(1, 1, Game.BOARD_WIDTH, 1);
+        g.drawLine(1, Game.BOARD_HEIGHT, Game.BOARD_WIDTH, Game.BOARD_HEIGHT);
+        g.drawLine(1, 1, 1, Game.BOARD_HEIGHT);
+        g.drawLine(Game.BOARD_WIDTH, 1, Game.BOARD_WIDTH, Game.BOARD_HEIGHT);
         //square grid\
         drawSquareGrid(g);
         
@@ -53,7 +54,7 @@ public class BattlePanel extends GamePanel {
      */
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(battleModel.BOARD_WIDTH, battleModel.BOARD_HEIGHT);
+        return new Dimension(Game.BOARD_WIDTH, Game.BOARD_HEIGHT);
     }
 
 }

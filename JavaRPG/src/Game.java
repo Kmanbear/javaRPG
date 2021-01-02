@@ -9,6 +9,12 @@ import javax.swing.*;
  * This class sets up the top-level frame and widgets for the GUI.
  */
 public class Game implements Runnable {
+    
+    public static final int MAP_DIM = 10;//dimension of world map
+    public static final int LENGTH = 30; //length of square side
+    public static final int BOARD_WIDTH = LENGTH * MAP_DIM;
+    public static final int BOARD_HEIGHT = LENGTH * MAP_DIM;
+    
     public void run() {
         
         final JFrame frame = new JFrame("Java RPG");
@@ -19,11 +25,10 @@ public class Game implements Runnable {
         status_panel.add(status);
       
         // Game board
-        MapModel mapModel = new MapModel();
-        BattleModel battleModel = new BattleModel(new Player(0, 0, 0), new ArrayList());//TODO: placeholder, rethink battleModel
+        GameModel gameModel = new GameModel();
         final JPanel gameBoard = new JPanel(new CardLayout());
-        final PlayerMapPanel mapBoard = new PlayerMapPanel(status, mapModel, battleModel);
-        final BattlePanel battleBoard = new BattlePanel(status, mapModel, battleModel);
+        final PlayerMapPanel mapBoard = new PlayerMapPanel(status, gameModel);
+        final BattlePanel battleBoard = new BattlePanel(status, gameModel);
         gameBoard.add(mapBoard, "mapBoard");
         gameBoard.add(battleBoard, "battleBoard");
         frame.add(gameBoard, BorderLayout.CENTER);

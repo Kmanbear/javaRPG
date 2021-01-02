@@ -2,7 +2,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapModel extends Model {
+public class MapModel {
 
     private int dimension;
     private Tile[][] worldMap;
@@ -13,7 +13,7 @@ public class MapModel extends Model {
      * Constructor sets up game state.
      */
     public MapModel() {
-        dimension = MAP_DIM;
+        dimension = Game.MAP_DIM;
         reset();
     }
 

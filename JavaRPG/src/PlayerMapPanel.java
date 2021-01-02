@@ -12,19 +12,21 @@ import javax.swing.*;
 public class PlayerMapPanel extends GamePanel {
     
     private SquarePanel[][] squareBoard;
+    private MapModel mapModel;
     /**
      * Initializes the game board.
      */
-    public PlayerMapPanel(JLabel statusInit, MapModel mapModel1, BattleModel battleModel1) {
+    public PlayerMapPanel(JLabel statusInit, GameModel gameModel1) {
         
-        super(statusInit, mapModel1, battleModel1);
+        super(statusInit, gameModel1);
+        mapModel = gameModel.getMapModel();
         
         //initalize squareBoard
         int dim = mapModel.getPlayerMapDim();
         squareBoard = new SquarePanel[dim][dim];
         for (int i = 0; i < squareBoard.length; i++) {
             for (int j = 0; j < squareBoard.length; j++) {
-                squareBoard[i][j] = new SquarePanel(i, j, mapModel.LENGTH);
+                squareBoard[i][j] = new SquarePanel(i, j, Game.LENGTH);
             }
         }
 
@@ -87,10 +89,10 @@ public class PlayerMapPanel extends GamePanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         //draws lines to indicate colored sides of boards
-        g.drawLine(1, 1, mapModel.BOARD_WIDTH, 1);
-        g.drawLine(1, mapModel.BOARD_HEIGHT, mapModel.BOARD_WIDTH, mapModel.BOARD_HEIGHT);
-        g.drawLine(1, 1, 1, mapModel.BOARD_HEIGHT);
-        g.drawLine(mapModel.BOARD_WIDTH, 1, mapModel.BOARD_WIDTH, mapModel.BOARD_HEIGHT);
+        g.drawLine(1, 1, Game.BOARD_WIDTH, 1);
+        g.drawLine(1, Game.BOARD_HEIGHT, Game.BOARD_WIDTH, Game.BOARD_HEIGHT);
+        g.drawLine(1, 1, 1, Game.BOARD_HEIGHT);
+        g.drawLine(Game.BOARD_WIDTH, 1, Game.BOARD_WIDTH, Game.BOARD_HEIGHT);
         //square grid\
         drawSquareGrid(g);
         
@@ -139,6 +141,6 @@ public class PlayerMapPanel extends GamePanel {
      */
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(mapModel.BOARD_WIDTH, mapModel.BOARD_HEIGHT);
+        return new Dimension(Game.BOARD_WIDTH, Game.BOARD_HEIGHT);
     }
 }

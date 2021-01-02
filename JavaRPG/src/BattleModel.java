@@ -4,7 +4,7 @@ import java.util.List;
  * new model created everytime there is a battle
  */
 
-public class BattleModel extends Model{
+public class BattleModel {
     
     private List<Entity> enemies;
     private Player player;
