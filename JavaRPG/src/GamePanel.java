@@ -1,3 +1,4 @@
+import java.awt.CardLayout;
 import java.awt.Color;
 
 import javax.swing.BorderFactory;
@@ -6,6 +7,7 @@ import javax.swing.JPanel;
 
 public class GamePanel extends JPanel{
     
+    public JPanel cardLayout = new JPanel(new CardLayout());
     protected GameModel gameModel;
     protected JLabel status; // current status text
     
@@ -18,5 +20,6 @@ public class GamePanel extends JPanel{
         setFocusable(true);
         status = statusInit; // initializes the status JLabel
         gameModel = gameModel1;
+        
     }
 }

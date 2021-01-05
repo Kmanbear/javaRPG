@@ -13,13 +13,16 @@ public class GameModel {
     }
 
     public MapModel getMapModel() {
-        // TODO Auto-generated method stub
         return mapModel;
     }
 
     public BattleModel getCurrentBattleModel() {
-        // TODO Auto-generated method stub
         return currentBattleModel;
+    }
+
+    public void switchToBattle() {
+        // TODO Auto-generated method stub
+        
     }
     
     

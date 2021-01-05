@@ -31,6 +31,7 @@ public class PlayerMapPanel extends GamePanel {
         }
 
         /*
+         * Controller
          * Listens for mouseclicks.  Updates the model, then updates the game board
          * based off of the updated model.
          */
@@ -43,9 +44,8 @@ public class PlayerMapPanel extends GamePanel {
                     for (int j = 0; j < mapModel.getPlayerMapDim(); j++) {
                         if (squareBoard[i][j].contains(p)) {
                             int xMovement = i - ((mapModel.getPlayerMapDim() - 1) / 2);
-                            int yMovement = j - ((mapModel.getPlayerMapDim() - 1) / 2);                                 
-                            mapModel.playerMovement(xMovement, yMovement);
-                            mapModel.enemyMovement();
+                            int yMovement = j - ((mapModel.getPlayerMapDim() - 1) / 2);
+                            //TODO: gamePanel.switchToPhase(mapModel.update(xMovement, yMovement)));
                         }
                     }
                 }

@@ -26,13 +26,13 @@ public class Game implements Runnable {
       
         // Game board
         GameModel gameModel = new GameModel();
-        final JPanel gameBoard = new JPanel(new CardLayout());
+        final GamePanel gameBoard = new GamePanel(status, gameModel);
         final PlayerMapPanel mapBoard = new PlayerMapPanel(status, gameModel);
         final BattlePanel battleBoard = new BattlePanel(status, gameModel);
-        gameBoard.add(mapBoard, "mapBoard");
-        gameBoard.add(battleBoard, "battleBoard");
-        frame.add(gameBoard, BorderLayout.CENTER);
-      
+        gameBoard.cardLayout.add(mapBoard, "mapBoard");
+        gameBoard.cardLayout.add(battleBoard, "battleBoard");
+        frame.add(gameBoard.cardLayout, BorderLayout.CENTER);
+        
         // Reset button
         final JPanel control_panel = new JPanel();
         frame.add(control_panel, BorderLayout.NORTH);
@@ -48,8 +48,8 @@ public class Game implements Runnable {
         final JButton switchPanel = new JButton("switchPanel");
         switchPanel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                CardLayout cl = (CardLayout)(gameBoard.getLayout());
-                cl.previous(gameBoard);
+                CardLayout cl = (CardLayout)(gameBoard.cardLayout.getLayout());
+                cl.previous(gameBoard.cardLayout);
             }
         });
         control_panel.add(switchPanel);

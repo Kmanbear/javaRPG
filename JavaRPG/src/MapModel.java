@@ -141,25 +141,42 @@ public class MapModel {
         Tile[][] playerMap = player.getPlayerMap();
         return playerMap[j][i];
     }
-
-    public void enemyMovement() {
+    /*
+     * returns list of enemies that fight player
+     */
+    public List<Entity> enemyMovement() {
         //TODO: sort enemies list so stronger enemy comes first
-        System.out.println(enemies.toString());
+        List<Entity> enemiesToBattle = new ArrayList<Entity>();
         for (Entity enemy : enemies) {           
             List<Point> enemyPossibleMoves = enemy.calculatePossibleMoves();
             Point closestMove = new Point(enemy.location.x, enemy.location.y); //default: set to where enemy is already
             for (Point move : enemyPossibleMoves) {
-                if (inWorldMap(move) && getWorldMapCell(move).getAccessible()) {                    
+                if (inWorldMap(move) && getWorldMapCell(move).getAccessible()) {
                     if (move.distance(player.location) < closestMove.distance(player.location)) {
                         closestMove.setLocation(move);
                     }
                 }
             }
             worldMap[enemy.location.y][enemy.location.x].removeEntity(enemy);
-            worldMap[closestMove.y][closestMove.x].addEntity(enemy);
-            enemy.setLocation(new Point(closestMove.x, closestMove.y));
+            if (closestMove.distance(player.location) == 0) { //don't add enemy when on top of player
+                enemiesToBattle.add(enemy);
+            } else {
+                worldMap[closestMove.y][closestMove.x].addEntity(enemy);
+                enemy.setLocation(new Point(closestMove.x, closestMove.y));
+            }   
         }
-        
+        enemies.removeAll(enemiesToBattle);//all enemies that fight player are no longer on map or in map model
+        return enemiesToBattle;
+    }
+
+    public Phase update(int xMovement, int yMovement) {
+        playerMovement(xMovement, yMovement);
+        if (!enemyMovement().isEmpty()) {
+            //TODO: gameModel.switchToPhase(Phase.BATTLE);
+            return Phase.BATTLE;
+        } else {
+            return Phase.MAP;
+        }
     }
 
 }
